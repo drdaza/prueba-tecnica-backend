@@ -38,7 +38,8 @@ public class SecurityConfiguration {
                         .logoutUrl("/api/logout")
                         .deleteCookies("JSESSIONID"))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/api/register").permitAll()
+                        .requestMatchers("/api/login").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
                         .anyRequest()
                         .authenticated())
                 .userDetailsService(service)
