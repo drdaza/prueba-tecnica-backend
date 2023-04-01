@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 
 @Entity(name = "users")
 public class User {
@@ -26,6 +27,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @OneToOne
+    private Profile profile;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "roles_users", joinColumns = @JoinColumn(name = "id_role"), inverseJoinColumns = @JoinColumn(name = "id_user"))
     private Set<Role> roles;
@@ -39,6 +43,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.roles = roles;
+        this.profile = new Profile();
     }
 
     public Long getId() {
