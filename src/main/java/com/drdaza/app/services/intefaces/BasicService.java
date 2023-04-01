@@ -6,5 +6,5 @@ public interface BasicService<T> {
     
     public List<T> listAll();
     public T getOne();
-    public void Save(T entity);
+    public T Save(T entity);
 }

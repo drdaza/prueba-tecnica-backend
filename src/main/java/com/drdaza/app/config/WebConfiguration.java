@@ -11,8 +11,9 @@ public class WebConfiguration implements WebMvcConfigurer{
     public void addCorsMappings(CorsRegistry registry){
         registry
         .addMapping("/**")
-        .allowedOrigins("http://localhost:5173")
-        .allowCredentials(true)
+        .allowedOrigins("*")
+        /* .allowCredentials(true) */
         .allowedMethods("GET", "POST", "DELETE", "OPTION", "PUT");
+        //si pongo un allowed origin en especifico tengo que activar el allowcredentials= true de lo contrario no
     }
 }

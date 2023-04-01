@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.drdaza.app.services.securityService.JpaUserDetailsService;
@@ -13,7 +15,7 @@ import com.drdaza.app.services.securityService.JpaUserDetailsService;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-    
+
     @Autowired
     MyAuthtenticationEntryPoint authtenticationEntryPoint;
 
@@ -24,27 +26,33 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors()
-            .and()
-            .headers(csrf -> csrf.frameOptions().sameOrigin())
-            .formLogin(form -> form
-                       .loginPage("/api/login")
-                       .disable() )
-            .logout(out -> out
-                    .logoutUrl("/api/logout")
-                    .deleteCookies("JSESSIONID"))
-            .authorizeHttpRequests(auth -> auth
-                                   .requestMatchers("/api/register").permitAll()
-                                   .anyRequest()
-                                   .authenticated())
-            .userDetailsService(service)
-            .sessionManagement(session -> session
-                               .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-            .httpBasic(basic -> basic
-                       .authenticationEntryPoint(authtenticationEntryPoint));      
+                .cors()
+                .and()
+                .headers(head -> head.frameOptions().sameOrigin())
+                .csrf(csrf -> csrf.disable())
+                .formLogin(form -> form
+                        .disable())
+                .logout(out -> out
+                        .logoutUrl("/api/logout")
+                        .deleteCookies("JSESSIONID"))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/**").permitAll()
+                        .anyRequest()
+                        .authenticated())
+                .userDetailsService(service)
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .httpBasic(basic -> basic
+                        .authenticationEntryPoint(authtenticationEntryPoint));
 
-            return http.build();
+        return http.build();
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }
