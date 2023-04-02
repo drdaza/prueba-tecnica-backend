@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 
+import com.drdaza.app.repository.ProfileRepository;
 import com.drdaza.app.repository.RoleRepository;
 import com.drdaza.app.repository.UserRepository;
 
@@ -32,10 +33,13 @@ public class UserTest {
     RoleRepository rolesRepository;
 
     @Autowired
+    ProfileRepository profileRepository;
+
+    @Autowired
     EntityManager entityManager;
 
     @Test
-    public void testUserHaveRoles() {
+    void testUserHaveRoles() {
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         String password = encoder.encode("12345");
 
@@ -56,5 +60,33 @@ public class UserTest {
         assertThat("User role", userDB.getRoles().size(), equalTo(1));
         assertThat("User role name", userDB.getRoles().contains(role));
 
+    }
+
+    @Test
+    void test_User_Have_Profile(){
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        String password = encoder.encode("12345");
+
+
+        Role role = new Role(null, "ROLE_USER");
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
+        User user = new User(null, "user", "user@mail.com", password, roles);
+        /* Profile profile = new Profile(null, "have experience"); */
+
+        user.getProfile().setExperience("user have experience");
+
+        user.setPassword(password);
+
+        profileRepository.save(user.getProfile());
+        rolesRepository.save(role);
+        userRepository.save(user);
+
+        User userDB = entityManager.find(User.class, user.getId());
+
+        assertThat("User", userDB.getId(), equalTo(1L));
+        assertThat("User role", userDB.getRoles().size(), equalTo(1));
+        assertThat("User role name", userDB.getRoles().contains(role));
+        assertThat("user profile",userDB.getProfile().getExperience(), equalTo("user have experience"));
     }
 }
