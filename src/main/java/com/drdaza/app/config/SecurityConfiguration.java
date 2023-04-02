@@ -39,7 +39,8 @@ public class SecurityConfiguration {
                         .deleteCookies("JSESSIONID"))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/register").permitAll()
-                        .requestMatchers("/api/login").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
+                        .requestMatchers("api/profiles").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/login", "/api/shop/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
                         .anyRequest()
                         .authenticated())
                 .userDetailsService(service)

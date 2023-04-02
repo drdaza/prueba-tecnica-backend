@@ -19,8 +19,6 @@ import com.drdaza.app.services.intefaces.BasicService;
 public class RegisterController {
 
     private BasicService<User> service;
-
-    
     
     public RegisterController(UserService service) {
         this.service = service;
@@ -33,6 +31,7 @@ public class RegisterController {
 
         try {
             User userDB = service.Save(user);
+
             Map<String, String> json = new HashMap<>();
 
             json.put("username", userDB.getUsername());

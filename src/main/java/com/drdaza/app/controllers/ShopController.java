@@ -23,7 +23,7 @@ public class ShopController {
         this.service = service;
     }
 
-    @PostMapping("/course/{idCourse}/paymethod/{idMethod}/profile/{idPorfile}")
+    @PostMapping("/course/{idCourse}/paymethod/{idMethod}/profile/{idProfile}")
     public ResponseEntity<Map<String, String>> shopCourse(@PathVariable Long idCourse, @PathVariable Long idMethod,
             @PathVariable Long idProfile) {
         try {
